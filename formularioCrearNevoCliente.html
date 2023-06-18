@@ -1,10 +1,18 @@
 <html>
-    <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Crear nuevo
-        cliente</button>
+    <button
+        onclick="document.getElementById('id01').style.display='block'"
+        style="
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 5px;">
+        Crear nuevo cliente</button>
 
     <div id="id01" class="modal">
         <span onclick="document.getElementById('id01').style.display='none'" class="close"
-            title="Close Modal">&times;</span>
+            title="Close Modal">&times;
+        </span>
         <form id="formulario_crear_nuevo_cliente" class="modal-content">
             <div class="container">
                 <h1>Crear nuevo cliente</h1>
