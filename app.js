@@ -1,5 +1,5 @@
-let receptor = 're;BBA830831LJ2;BBVA MEXICO, S.A., INSTITUCION DE BANCA MULTIPLE, GRUPO FINANCIERO BBVA MEXICO;06600;;;601;G03;'
-let comprobante = '\nfa;FAC;MXN;PUE;;01;;06600;601;X 003;01'
+let receptor = ''
+let comprobante = ''
 let conceptos = ''
 
 const input_file_xlsx = document.getElementById('input_file_xlsx')
@@ -12,9 +12,15 @@ const input_file_pdf = document.getElementById('input_file_pdf')
 const boton_cargar_archivo_pdf = document.getElementById('input_file_pdf')
 boton_cargar_archivo_pdf.addEventListener('change', read_pdf)
 
-let archivo_nombre = document.getElementById('archivo-nombre')
+let archivo_nombre_xlsx = document.getElementById('archivo-nombre-xlsx')
+let archivo_nombre_pdf = document.getElementById('archivo-nombre-pdf')
+
+let archivo_nombre = ''
+
 let clientes_select = document.getElementById('clientes')
 clientes_select.addEventListener('change', setCliente)
+
+let obj_cliente = document.getElementById('obj_cliente')
 
 let list_clientes = []
 
@@ -22,19 +28,34 @@ obtenerClientes()
 
 async function read_xlsx() {
     try {
+        let datos_conceptos = []
+        let index_cocepto = 1
         await readXlsxFile(input_file_xlsx.files[0]).then(async function (rows) {
-            archivo_nombre.textContent = input_file_xlsx.files[0].name
+            archivo_nombre_xlsx.textContent = input_file_xlsx.files[0].name
+            archivo_nombre = archivo_nombre_xlsx.textContent
             for(let concepto of rows){
-                concepto.push(concepto[4])
-                concepto.push(1)
+                if(2<index_cocepto){
+                    datos_conceptos.push({
+                        'cantidad': 1,
+                        'unidad': 'servicio',
+                        'clave_unidad': 'E48',
+                        'clave_prod_serv': '80101500',
+                        'no_identificacion': '',
+                        'descripcion': `${concepto[1]} ${concepto[2]} ${concepto[3]}`,
+                        'valor_unitario': concepto[4],
+                        'importe': concepto[4],
+                        'descuento': '',
+                        'objeto_imp': '02'
+                    })
+                }
+                index_cocepto = index_cocepto + 1
             }
-            console.log(rows)
             const response = await fetch("server.php", {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 method: "POST",
-                body: JSON.stringify(rows)
+                body: JSON.stringify(datos_conceptos)
             })
             conceptos = await response.json()
         })
@@ -46,7 +67,8 @@ async function read_xlsx() {
 async function read_pdf(){
     try {
         const blob = new Blob([input_file_pdf.files[0]], {type: 'application/pdf'})
-        archivo_nombre.textContent = input_file_pdf.files[0].name
+        archivo_nombre_pdf.textContent = input_file_pdf.files[0].name
+        archivo_nombre = input_file_pdf.files[0].name
         //
         // If absolute URL from the remote server is provided, configure the CORS
         // header on that server.
@@ -65,7 +87,7 @@ async function read_pdf(){
 
         const pdf = await loadingTask.promise
         let page = null
-        let lista_conceptos_pajina = [[], []]
+        let lista_conceptos_pajina = []
         for(let pagina = 1; pagina <= pdf['_pdfInfo']['numPages']; pagina++){
             page = await pdf.getPage(pagina)
             const {conceptos_pajina, is_dejar_buscar_conceptos} = await page.getTextContent().then((textContent) => buscarConceptos(textContent))
@@ -102,15 +124,18 @@ function buscarConceptos(textContent) {
             contar_cabeceras = contar_cabeceras + 1
         } else if(contar_cabeceras === 7){
             if (concepto.length == 8) {
-                conceptos.push([
-                    concepto[0],
-                    concepto[1],
-                    concepto[2],
-                    concepto[3],
-                    parseFloat(concepto[5].replace('.', '').replace(',', '.')), 
-                    '', '',
-                    parseInt(concepto[4])
-                ])
+                conceptos.push({
+                    'cantidad': parseInt(concepto[4]),
+                    'unidad': 'servicio',
+                    'clave_unidad': 'E48',
+                    'clave_prod_serv': '80101500',
+                    'no_identificacion': '',
+                    'descripcion': `${concepto[1]} ${concepto[2]} ${concepto[3]}`,
+                    'valor_unitario': parseFloat(concepto[5].replace('.', '').replace(',', '.')),
+                    'importe': parseFloat(concepto[7].replace('MXN ', '').replace('.', '').replace(',', '.')),
+                    'descuento': '',
+                    'objeto_imp': '02'
+                })
                 concepto = []
                 is_habilitar_asignacion_concepto = false
             }
@@ -137,9 +162,7 @@ function buscarConceptos(textContent) {
 async function obtenerClientes() {
     try{
         const response = await fetch('listarClientes.php',{
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json', },
             method: 'GET',
         })
        const {clientes} = await response.json()
@@ -161,22 +184,22 @@ function setCliente(){
     if(0<clientes_select.value){
         const {rfc, nombre, domicilio_fiscal_receptor, residencia_fiscal, numr_reg_id_trib, regimen_fiscal_recepto, uso_CFDI, email} = list_clientes[clientes_select.value-1]
         receptor = `re;${rfc};${nombre};${domicilio_fiscal_receptor};${residencia_fiscal};${numr_reg_id_trib};${regimen_fiscal_recepto};${uso_CFDI};${email}`
-        comprobante = `\nfa;FAC;MXN;PUE;;01;;${domicilio_fiscal_receptor};${regimen_fiscal_recepto};X 003;01`
-        console.log(receptor)
+        obj_cliente.textContent = receptor
+        comprobante = '\nfa;FAC;MXN;;PPD;99;08 DIAS;06800;601;X 003;01'
     }
 }
 
 function descargar() {
-    if (conceptos.hasOwnProperty('renglon_5_6')) {
+    if (conceptos.hasOwnProperty('renglon_5_6') && receptor.length) {
         const link = document.createElement("a")
         const estructura = receptor + comprobante + conceptos.renglon_5_6 + '\nfafin'
         const file = new Blob([estructura], { type: 'text/plain' })
         link.href = URL.createObjectURL(file)
-        link.download = `${archivo_nombre.textContent}.txt`
+        link.download = `${archivo_nombre}.txt`
         link.click()
         URL.revokeObjectURL(link.href)
         conceptos = ''
-        archivo_nombre.textContent = 'Ningún archivo elegido'
+        archivo_nombre = 'Ningún archivo elegido'
     }
 }
 $(function (){
