@@ -1,0 +1,240 @@
+:root{
+    --funtePrincipal: 'Rubik', sans-serif;
+    --primario:#276e90;
+    --secundario:#cecfc9;
+    --oscuro:#0A3143;
+    --claro:#EFEFEF;
+    --negro:#000000;
+    --correcto:#198754;
+}
+
+
+
+/*Inicio codigo-fer**/
+.hidden {display: none;}
+.file-drop-area {
+    width: 100%;
+    padding: 25px;
+    border: 1px dashed var(--negro);
+    border-radius: 1rem;
+    grid-column: span 2;
+    text-align: center;
+}
+.file-drop-area span{
+  font-size: 1.5rem;
+}
+/*Final codigo-fer**/
+
+
+
+/*Truco para "Box sizing" y "rem"**/
+html{font-size: 62.5%; box-sizing: border-box;}
+*,*:before,*:after{box-sizing: inherit;}
+
+/*Utiliti first**/
+.mt-1{margin-top: 1rem;} .mt-2{margin-top: 2rem;}
+.mt-3{margin-top: 3rem;} .mt-4{margin-top: 4rem;}
+
+.ml-1{margin-left: 1rem;} .ml-2{margin-left: 2rem;}
+
+.mx-a{margin-left: auto; margin-right: auto;}
+
+.d-flex{display: flex;} 
+.justify-center{justify-content: center;}
+.align-center{align-items: center;}
+
+.text-center{text-align: center;}
+
+/*Estilos globales**/
+body{
+  font-family: 'Rubik', sans-serif;
+  background-color: var(--claro);
+  color: var(--negro);
+  margin: 0;
+}
+h1{ font-size: 3rem;}
+h2{ font-size: 2.5rem;}
+h3{ font-size: 2rem;}
+h1,h2,h3{text-align: center;}
+p{ font-size: 1.5rem;}
+
+/*header**/
+.header{ background-color: var(--oscuro); padding: 2rem;}
+.header__titulo{ 
+  color: var(--claro); 
+  margin: 0;
+  font-weight: 700;
+  text-transform: uppercase
+}
+
+/*contenedor**/
+.contenedor-principal,.contenedor{ 
+  max-width: 80rem; 
+  margin-right: auto; 
+  margin-left: auto;
+}
+.contenedor-principal{
+  border: 1px solid var(--negro);
+  box-shadow: 0rem 0rem 2rem 0.5rem rgba(10,49,67,0.5);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+
+/*formulario**/
+.contenedor-campos{margin: 0 auto; width: 80%;}
+.campo{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  margin: 2rem 0;
+}
+.campo__nombre,.campo__select,.campo__input,
+.checkbox__nombre{font-size: 2rem;}
+.campo__select,.campo__input,.checkbox__nombre{font-weight: 700;}
+.campo__nombre{font-weight: 400;}
+.campo__select{ width: 100%;}
+.campo__input{margin: 0;}
+.campo__input{margin-bottom: 0 !important;}
+.contenedor-checkbox{display: flex;justify-content: space-evenly;}
+
+
+
+/*bottones**/
+.boton-descargar{
+  font-size: 2rem;
+  text-transform: uppercase;
+  border-radius: .5rem;
+  border: 2px solid var(--oscuro);
+  padding: 1rem 2rem;
+  background-color: transparent;
+  color: var(--oscuro);
+  font-weight: 700;
+  transition: background-color .4s ease;
+}
+.boton-descargar:hover{ 
+  cursor: pointer;
+  background-color: transparent;
+  border-color: var(--primario);
+  background-color: var(--primario);
+  color: var(--claro);
+}
+
+.boton-archivo{
+  background-color: var(--primario);
+  color: var(--claro);
+  padding: 1rem;
+  letter-spacing: .2rem;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  transition: box-shadow 0.1s ease;
+}
+.boton-archivo:hover{
+  cursor: pointer;
+  box-shadow: 0rem 0rem 1rem 0.2rem rgba(10,49,67,0.5);
+}
+
+
+
+
+
+/*formularioCrearNevoCliente**/
+.modal {
+  display: none;/* Hidden by default */
+  position: fixed;/* Stay in place */
+  z-index: 1;/* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;/* Full width */
+  height: 100%;/* Full height */
+  overflow: auto;/* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 0px;
+}
+/* Modal Content/Box */
+.modal-content {
+  background-color: var(--claro);
+  margin: 5% auto 15% auto;
+  /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%;
+  /* Could be more or less, depending on screen size */
+}
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.llenar-formulario{
+  color: var(--negro);
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--negro);
+}
+.contenedor-campo-pregunta{
+  width: 95%;
+  margin: 0 auto;
+}
+.campo-pregunta{
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  column-gap: 1rem;
+}
+.campo-pregunta label,.campo-pregunta input{ font-size: 2rem;}
+.campo-pregunta label{ color: var(--oscuro);}
+.campo-pregunta input{ font-weight: 700;}
+
+.contenedor-botones{
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 4rem 0 1rem 0;
+}
+.cancelbtn,.signupbtn{
+  width: 30%;
+  padding: 1rem;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .2rem;
+  border: 2.5px solid black;
+}
+.cancelbtn{
+  background-color: transparent;
+  color: #f44336;
+  border-color: #f44336;
+}
+.cancelbtn:hover{
+  background-color: #f44336;
+  color: var(--claro);
+  border-color: #f44336;
+}
+.signupbtn{
+  background-color: transparent;
+  color: green;
+  border-color: green;
+}
+.signupbtn:hover{
+  background-color: green;
+  color: var(--claro);
+  border-color: green;
+}

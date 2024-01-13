@@ -1,48 +1,70 @@
-<html>
-    <button
-        onclick="document.getElementById('id01').style.display='block'"
-        style="
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 5px 5px;">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Crear nuevo cliente</title>
+</head>
+
+<body>
+    <button onclick="document.getElementById('id01').style.display='block'" style="background-color: green;color: white;border: none;
+            border-radius: 10px;padding: 5px 5px;">
         Crear nuevo cliente</button>
 
     <div id="id01" class="modal">
-        <span onclick="document.getElementById('id01').style.display='none'" class="close"
-            title="Close Modal">&times;
+        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;
         </span>
         <form id="formulario_crear_nuevo_cliente" class="modal-content">
             <div class="container">
-                <h1>Crear nuevo cliente</h1>
-                <p>Por favor, rellene este formulario para crear una cliente.</p>
-                <hr>
-                <label for="rfc"><b>RFC*</b></label>
-                <input type="text" placeholder="Ingrese el RFC" name="rfc" id="rfc" required>
+                <header class="header">
+                    <h1 class="header__titulo">Crear nuevo cliente</h1>
+                </header>
+                <p class="llenar-formulario">Por favor, rellene este formulario para crear una cliente.</p>
 
-                <label for="nombre"><b>Nombre*</b></label>
-                <input type="text" placeholder="Ingrese el nombre" name="nombre" required>
+                <div class="contenedor-campo-pregunta">
+                    <div class="campo-pregunta">
+                        <label for="rfc"><b>RFC* :</b></label>
+                        <input type="text" placeholder="Ingrese el RFC" name="rfc" id="rfc" required>
+                    </div>
 
-                <label for="domicilio_fiscal_receptor"><b>Domicilio fiscal receptor*</b></label>
-                <input type="text" placeholder="Ingrese el domicilio fiscal receptor" name="domicilio_fiscal_receptor" required>
+                    <div class="campo-pregunta">
+                        <label for="nombre"><b>Nombre* :</b></label>
+                        <input type="text" placeholder="Ingrese el nombre" name="nombre" required>
+                    </div>
 
-                <label for="residencia_fiscal"><b>Residencia fiscal</b></label>
-                <input type="text" placeholder="Ingrese la residencia fiscal" name="residencia_fiscal">
+                    <div class="campo-pregunta">
+                        <label for="domicilio_fiscal_receptor"><b>Domicilio fiscal receptor* :</b></label>
+                        <input type="text" placeholder="Ingrese el domicilio fiscal receptor"
+                            name="domicilio_fiscal_receptor" required>
+                    </div>
 
-                <label for="numr_reg_id_trib"><b>Numero region id tributario</b></label>
-                <input type="text" placeholder="Ingrese el numero region id tributario" name="numr_reg_id_trib">
+                    <div class="campo-pregunta">
+                        <label for="residencia_fiscal"><b>Residencia fiscal :</b></label>
+                        <input type="text" placeholder="Ingrese la residencia fiscal" name="residencia_fiscal">
+                    </div>
 
-                <label for="regimen_fiscal_recepto"><b>Regimen fiscal receptor*</b></label>
-                <input type="text" placeholder="Ingrese el regimen fiscal receptor" name="regimen_fiscal_recepto" required>
+                    <div class="campo-pregunta">
+                        <label for="numr_reg_id_trib"><b>Numero region id tributario :</b></label>
+                        <input type="text" placeholder="Ingrese el numero region id tributario" name="numr_reg_id_trib">
+                    </div>
 
-                <label for="uso_CFDI"><b>Uso de CFDI*</b></label>
-                <input type="text" placeholder="Ingrese el CFDI" name="uso_CFDI" required>
+                    <div class="campo-pregunta">
+                        <label for="regimen_fiscal_recepto"><b>Regimen fiscal receptor* :</b></label>
+                        <input type="text" placeholder="Ingrese el regimen fiscal receptor"
+                            name="regimen_fiscal_recepto" required>
+                    </div>
 
-                <label for="emial"><b>Email</b></label>
-                <input type="text" placeholder="Ingrese el email" name="email">
+                    <div class="campo-pregunta">
+                        <label for="uso_CFDI"><b>Uso de CFDI* :</b></label>
+                        <input type="text" placeholder="Ingrese el CFDI" name="uso_CFDI" required>
+                    </div>
 
-                <div class="clearfix">
+                    <div class="campo-pregunta">
+                        <label for="emial"><b>Email :</b></label>
+                        <input type="text" placeholder="Ingrese el email" name="email">
+                    </div>
+                </div>
+
+                <div class="clearfix contenedor-botones">
                     <button type="button" onclick="document.getElementById('id01').style.display='none'"
                         class="cancelbtn">Cancel</button>
                     <button type="submit" class="signupbtn">Crear</button>
@@ -50,6 +72,8 @@
             </div>
         </form>
     </div>
+</body>
+
 </html>
 
 <script>
@@ -76,7 +100,7 @@
                 method: 'POST',
                 body: JSON.stringify(obj_cliente)
             })
-            const {mensaje} = await response.json();
+            const { mensaje } = await response.json();
             console.log(mensaje)
             document.getElementById('formulario_crear_nuevo_cliente').reset();
             modal.style.display = "none";
@@ -87,134 +111,3 @@
         }
     }
 </script>
-
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    /* Full-width input fields */
-    input[type=text],
-    input[type=password] {
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        display: inline-block;
-        border: none;
-        background: #f1f1f1;
-    }
-
-    /* Add a background color when the inputs get focus */
-    input[type=text]:focus,
-    input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-
-    /* Set a style for all buttons */
-    /* button {
-      background-color: #04AA6D;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      opacity: 0.9;
-    } */
-
-
-
-    /* Extra styles for the cancel button */
-    .cancelbtn {
-      background-color: #d47069;
-    }
-
-    .cancelbtn:hover  {
-      background-color: #f44336;
-    }
-
-    /* Float cancel and signup buttons and add an equal width */
-    .cancelbtn,
-    .signupbtn {
-        float: left;
-        width: 50%;
-    }
-
-    /* Add padding to container elements */
-    .container {
-        padding: 16px;
-    }
-
-    /* The Modal (background) */
-    .modal {
-        display: none;
-        /* Hidden by default */
-        position: fixed;
-        /* Stay in place */
-        z-index: 1;
-        /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        /* Full width */
-        height: 100%;
-        /* Full height */
-        overflow: auto;
-        /* Enable scroll if needed */
-        background-color: #474e5d;
-        padding-top: 0px;
-    }
-
-    /* Modal Content/Box */
-    .modal-content {
-        background: linear-gradient(to right, #4587dc, #6c6ab3);
-        margin: 5% auto 15% auto;
-        /* 5% from the top, 15% from the bottom and centered */
-        border: 1px solid #888;
-        width: 80%;
-        /* Could be more or less, depending on screen size */
-    }
-
-    /* Style the horizontal ruler */
-    hr {
-        border: 1px solid #f1f1f1;
-        margin-bottom: 25px;
-    }
-
-    /* The Close Button (x) */
-    .close {
-        position: absolute;
-        right: 35px;
-        top: 15px;
-        font-size: 40px;
-        font-weight: bold;
-        color: #f1f1f1;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #f44336;
-        cursor: pointer;
-    }
-
-    /* Clear floats */
-    .clearfix::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-
-    /* Change styles for cancel button and signup button on extra small screens */
-    @media screen and (max-width: 300px) {
-
-        .cancelbtn,
-        .signupbtn {
-            width: 100%;
-        }
-    }
-</style>

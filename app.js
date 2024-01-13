@@ -5,12 +5,12 @@ let conceptos = ''
 const input_file_xlsx = document.getElementById('input_file_xlsx')
 
 const boton_cargar_archivo_xlsx = document.getElementById('input_file_xlsx')
-boton_cargar_archivo_xlsx.addEventListener('change', read_xlsx)
+boton_cargar_archivo_xlsx.addEventListener('change', leerArchivoXLSX)
 
 const input_file_pdf = document.getElementById('input_file_pdf')
 
 const boton_cargar_archivo_pdf = document.getElementById('input_file_pdf')
-boton_cargar_archivo_pdf.addEventListener('change', read_pdf)
+boton_cargar_archivo_pdf.addEventListener('change', leerArchivoPDF)
 
 let archivo_nombre_xlsx = document.getElementById('archivo-nombre-xlsx')
 let archivo_nombre_pdf = document.getElementById('archivo-nombre-pdf')
@@ -20,13 +20,18 @@ let archivo_nombre = ''
 let clientes_select = document.getElementById('clientes')
 clientes_select.addEventListener('change', setCliente)
 
-let obj_cliente = document.getElementById('obj_cliente')
+let input_folio = document.getElementById('folio')
+input_folio.addEventListener('input', setComprobante)
+
+let forma_pago = ''
+let metodo_pago = ''
+let condiciones_pago = ''
 
 let list_clientes = []
 
 obtenerClientes()
 
-async function read_xlsx() {
+async function leerArchivoXLSX() {
     try {
         let datos_conceptos = []
         let index_cocepto = 1
@@ -64,7 +69,7 @@ async function read_xlsx() {
     }
 }
 
-async function read_pdf(){
+async function leerArchivoPDF(){
     try {
         const blob = new Blob([input_file_pdf.files[0]], {type: 'application/pdf'})
         archivo_nombre_pdf.textContent = input_file_pdf.files[0].name
@@ -104,13 +109,14 @@ async function read_pdf(){
             body: JSON.stringify(lista_conceptos_pajina)
         })
         conceptos = await response.json()
-        console.log(conceptos)
+
     } catch (error) {
-        console.log(error)
+        console.error(`Download error: ${error.message}`)
     }
 }
 
 function buscarConceptos(textContent) {
+    var expresionRegular = /^\d+ unidad$/; 
     let conceptos = []
     let contar_cabeceras = 0 // Va a contar las cabeceras de los artículos, en la página 2
     let is_habilitar_asignacion_concepto = false
@@ -124,13 +130,14 @@ function buscarConceptos(textContent) {
             contar_cabeceras = contar_cabeceras + 1
         } else if(contar_cabeceras === 7){
             if (concepto.length == 8) {
+                console.log(concepto)
                 conceptos.push({
                     'cantidad': parseInt(concepto[4]),
                     'unidad': 'servicio',
                     'clave_unidad': 'E48',
                     'clave_prod_serv': '80101500',
                     'no_identificacion': '',
-                    'descripcion': `${concepto[1]} ${concepto[2]} ${concepto[3]}`,
+                    'descripcion': `${concepto[1]} ${concepto[3]}`,
                     'valor_unitario': parseFloat(concepto[5].replace('.', '').replace(',', '.')),
                     'importe': parseFloat(concepto[7].replace('MXN ', '').replace('.', '').replace(',', '.')),
                     'descuento': '',
@@ -141,6 +148,10 @@ function buscarConceptos(textContent) {
             }
             if(is_habilitar_asignacion_concepto){
                 if(8>concepto.length){
+                    
+                    if(expresionRegular.test(textContent.items[i].str) &&  concepto.length === 3){
+                        concepto.push('')
+                    }
                     concepto.push(textContent.items[i].str)
                 }
             } else{
@@ -180,17 +191,27 @@ async function obtenerClientes() {
     }
 }
 
+function setComprobante(){
+    if(0 < clientes_select.value){
+        const {forma_pago, metodos_pago } =  list_clientes[clientes_select.value-1]
+        let metodo_pago = metodos_pago.split(',')
+        comprobante = `\nfa;FAC;MXN;;${metodo_pago[1]};${forma_pago};${metodo_pago[0]};06800;601;${input_folio.value};01`
+    } else {
+        alert('Primero seleccioné un cliente')
+        input_folio.value = ''
+    }
+}
+
 function setCliente(){
-    if(0<clientes_select.value){
+    if(clientes_select.value){
         const {rfc, nombre, domicilio_fiscal_receptor, residencia_fiscal, numr_reg_id_trib, regimen_fiscal_recepto, uso_CFDI, email} = list_clientes[clientes_select.value-1]
         receptor = `re;${rfc};${nombre};${domicilio_fiscal_receptor};${residencia_fiscal};${numr_reg_id_trib};${regimen_fiscal_recepto};${uso_CFDI};${email}`
-        obj_cliente.textContent = receptor
-        comprobante = '\nfa;FAC;MXN;;PPD;99;08 DIAS;06800;601;X 003;01'
+        setComprobante()
     }
 }
 
 function descargar() {
-    if (conceptos.hasOwnProperty('renglon_5_6') && receptor.length) {
+    if (conceptos.hasOwnProperty('renglon_5_6') && receptor.length && comprobante.length) {
         const link = document.createElement("a")
         const estructura = receptor + comprobante + conceptos.renglon_5_6 + '\nfafin'
         const file = new Blob([estructura], { type: 'text/plain' })
@@ -200,6 +221,8 @@ function descargar() {
         URL.revokeObjectURL(link.href)
         conceptos = ''
         archivo_nombre = 'Ningún archivo elegido'
+    } else {
+
     }
 }
 $(function (){

@@ -2,128 +2,85 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script><!-- Script para leer el archivo excel -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><!-- Add icon library -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <!-- Script para leer el archivo excel -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- Add icon library -->
     <script src="build/pdf.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/main.css">
+    </script>
 
     <title>Excel a bloc de notas</title>
 </head>
 
 <body>
-    
-    <h2>Construir estructura de archivo TXT</h2>
-    <div class='wrapper'>
-        <div class="header">Seleccione cliente</div>
-        <div style="grid-column: span 1; overflow: hidden; padding: 10px;">
-            <select 
-                id="clientes"
-                style=
-                    "width: 100%;
-                    padding: 5px 5px;
-                    border-radius: 10px;"
-            >
-                <option value="0">Seleccione un cliente</option>
-            </select>
-        </div>
-        <div style="grid-column: span 1; justify-content: center; display: flex; padding: 10px;">
+    <header class="header">
+        <h1 class="header__titulo">Construir estructura de archivo TXT</h1>
+        <div class="d-flex justify-center mt-2">
             <div class="crearNuevoCliente"></div>
         </div>
-        <div style="grid-column: span 2; border: solid 1px; overflow: hidden;">
-            <p id="obj_cliente" style="text-align: center;"></p>
-        </div>
+    </header>
+
+    <main class="contenedor-principal mt-3">
+        <form class="contenedor-campos">
+
+            <div class="wrapper campo">
+                <label class="campo__nombre">Cliente:</label>
+                <select id="clientes" class="campo__select">
+                    <option class="campo__option" value="0" selected disabled>Seleccione un cliente</option>
+                </select>
+            </div>
+
+
+            <div class="wrapper campo">
+                <label class="campo__nombre">Datos del comprobante:</label>
+                <input class="campo__input" type="text" placeholder="Folio" id="folio" />
+            </div>
+
+            <div class="wrapper campo">
+                <label class="campo__nombre">Tipo de archivo: </label>
+                <div class="contenedor-checkbox">
+                    <div class="checkbox">
+                        <label class="checkbox__nombre"><input class="disabler" type="checkbox" value="1" />XLSX</label>
+                    </div>
+                    <div class="checkbox">
+                        <label class="checkbox__nombre"><input class="disabler_pdf" type="checkbox"
+                                value="1" />PDF</label>
+                    </div>
+                </div>
+
+                <div class="file-drop-area showable mt-2">
+                    <span id="archivo-nombre-xlsx"> Ningún archivo XLSX elegido </span>
+                    <input type="file" id="input_file_xlsx" accept=".xlsx" hidden />
+                    <label for="input_file_xlsx" class="boton-archivo ml-1">
+                        Subir archivo
+                    </label>
+                </div>
+
+                <div class="file-drop-area showable_pdf mt-2">
+                    <span id="archivo-nombre-pdf"> Ningún archivo PDF elegido </span>
+                    <input type="file" id="input_file_pdf" accept=".pdf" hidden />
+                    <label for="input_file_pdf" class="boton-archivo ml-1">
+                        Subir archivo
+                    </label>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <div class="contenedor mt-3 d-flex justify-center">
+        <button class="boton-descargar" onclick="descargar()">Descargar ></button>
     </div>
-    <br>
-    <div class='wrapper'>
-        <div class="header">Cargar archivo</div>
-        <label style="grid-column: span 1; justify-content: center; padding: 5%; display: flex;">
-            <input class="disabler" type="checkbox" value="1">Cargar archivo .xlsx
-        </label>
-        <label style="grid-column: span 1; justify-content: center; padding: 5%; display: flex;">
-            <input class="disabler_pdf" type="checkbox" value="1">Cargar archivo .pdf
-        </label>
-        <div class="file-drop-area showable">
-            <span id="archivo-nombre-xlsx"> Ningún archivo XLSX elegido </span>
-            <input type="file" id="input_file_xlsx" accept=".xlsx" hidden />
-            <label for="input_file_xlsx" style="background-color: indigo; color: white; padding: 0.5rem; font-family: sans-serif; border-radius: 0.3rem; cursor: pointer; margin-top: 1rem;">
-                Subir archivo
-            </label>
-        </div>
-        <div class="file-drop-area showable_pdf">
-            <span id="archivo-nombre-pdf"> Ningún archivo PDF elegido </span>
-            <input type="file" id="input_file_pdf" accept=".pdf" hidden />
-            <label for="input_file_pdf" style="background-color: indigo; color: white; padding: 0.5rem; font-family: sans-serif; border-radius: 0.3rem; cursor: pointer; margin-top: 1rem;">
-                Subir archivo
-            </label>
-        </div>
-    </div>
-    <br>
-    
-    <button
-        onclick="descargar()"
-        style="
-            background-color: green;
-            color: white;
-            width: 40%;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 10px;"
-        >
-        Descargar
-    </button>
-    
+
+
     <script src="app.js" type="text/javascript"></script>
 </body>
 
 </html>
-<style>
-
-    .wrapper {
-        border: solid rgb(123, 187, 190);
-        border-radius: 10px;
-        padding: 1em;
-        width: 40%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .wrapper .header {
-        position: absolute;
-        margin-top: -25px;
-        margin-left: 10px;
-        color: white;
-        background: rgb(139, 195, 198);
-        border-radius: 5px;
-        padding: 2px 10px;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(to right, #5e5e5e, #42415c);
-        color: #D7D7EF;
-        font-family: 'Lato', sans-serif;
-    }
-
-    .file-drop-area {
-        max-width: 100%;
-        padding: 25px;
-        border: 2px dashed rgba(255, 255, 255, 0.4);
-        border-radius: 3px;
-        transition: 0.2s;
-        grid-column: span 2;
-    }
-</style>
